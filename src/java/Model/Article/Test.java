@@ -4,6 +4,7 @@
  */
 package Model.Article;
 
+import com.google.gson.Gson;
 import dal.articleDAO.ArticleDAO;
 import java.sql.Date;
 import java.text.ParseException;
@@ -19,8 +20,10 @@ import org.json.JSONObject;
 public class Test {
     public static void main(String[] args) throws ParseException, JSONException {
         ArticleDAO ad = new ArticleDAO();
-        Article a = (Article)ad.getById(2);
-        System.out.println(a);
+        ArrayList<Article> list = ad.getListArticleAccepted();
+        Gson gson = new Gson();
+        String json = gson.toJson(list);
+        System.out.println(json);
 
 //        Article art;
 //        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");

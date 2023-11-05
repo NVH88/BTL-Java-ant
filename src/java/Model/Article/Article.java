@@ -92,6 +92,10 @@ public class Article {
     public void setArticle_name(String article_name) {
         this.article_name = article_name;
     }
+
+    public void setStt(boolean stt) {
+        this.stt = stt;
+    }
     
     @Override
     public String toString() {

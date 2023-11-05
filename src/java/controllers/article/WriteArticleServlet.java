@@ -53,14 +53,24 @@ public class WriteArticleServlet extends HttpServlet {
             UserDAO ud = new UserDAO();
             User user = (User) ud.getById(user_id);
             Date today = new Date(System.currentTimeMillis());
-            boolean stt = false; // chỉnh sau khi có user thật
-            // check role ở đây, nếu role 3 thì duyệt luôn, role 2 thì chờ duyệt
+            boolean stt = false;         
+            if (user.getUser_role() == 2) {
+                stt = true;
+            }
             Article art = new Article(0, 0, 0, 0, article_name, article_category,
                     article_tag, content, image, today, today, stt, user);
             ArticleDAO ad = new ArticleDAO();
             ad.addObject(art);
-            
-//            response ở đây ( đã đăng hay chờ duyệt)
+            String message;
+            if (stt) {
+                message = "Your article has been posted.";
+            } else {
+                message = "Your post has been sent, the admin will review and approve your post. Thank you for your contribution.";
+            }
+            String jsonString = "{\"message\": " + message + "}";
+            response.setContentType("application/json"); 
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write(jsonString);
         } catch (JSONException ex) {
             Logger.getLogger(WriteArticleServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
