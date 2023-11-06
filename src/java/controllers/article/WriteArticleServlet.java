@@ -30,26 +30,24 @@ import org.json.JSONObject;
 public class WriteArticleServlet extends HttpServlet {
     
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         try {
-            String article_name = request.getParameter("article_name");
-            String image = request.getParameter("image");
-            String content = request.getParameter("content");
-            String article_category = request.getParameter("article_category");
-            String article_tag = request.getParameter("article_tag");
-            
             BufferedReader reader = request.getReader();
             StringBuilder json = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
                 json.append(line);
             }
-            JSONObject jsonObject = new JSONObject(json);
-            int user_id = jsonObject.getInt("user_id");
-            // gọi user ở đây (getUserById)
             
-            //fake User
+            JSONObject jsonObject = new JSONObject(json.toString());
+            int user_id = jsonObject.getInt("user_id");
+            String article_name = jsonObject.getString("article_name");
+            String image = jsonObject.getString("image");
+            String content = jsonObject.getString("content");
+            String article_category = jsonObject.getString("article_category");
+            String article_tag = jsonObject.getString("article_tag");
+            
             UserDAO ud = new UserDAO();
             User user = (User) ud.getById(user_id);
             Date today = new Date(System.currentTimeMillis());
@@ -61,13 +59,13 @@ public class WriteArticleServlet extends HttpServlet {
                     article_tag, content, image, today, today, stt, user);
             ArticleDAO ad = new ArticleDAO();
             ad.addObject(art);
-            String message;
+            String jsonString;
             if (stt) {
-                message = "Your article has been posted.";
+                jsonString = "{\"message\": \"Your article has been posted.\"}";
             } else {
-                message = "Your post has been sent, the admin will review and approve your post. Thank you for your contribution.";
+                jsonString = "{\"message\": \"Your post has been sent, admin will review and approve your post. Thank you for your contribution.\"}";
             }
-            String jsonString = "{\"message\": " + message + "}";
+          
             response.setContentType("application/json"); 
             response.setCharacterEncoding("UTF-8");
             response.getWriter().write(jsonString);

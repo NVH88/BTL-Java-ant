@@ -35,12 +35,11 @@ public class DeleteArticle extends HttpServlet {
             while ((line = reader.readLine()) != null) {
                 json.append(line);
             }
-            JSONObject jsonObject = new JSONObject(json);
+            JSONObject jsonObject = new JSONObject(json.toString());
             int article_id = jsonObject.getInt("article_id");
             ArticleDAO ad = new ArticleDAO();
             ad.deleteObject(article_id);
-            
-            
+                       
             String jsonString = "{\"message\": \"delete successfully\"}";
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");

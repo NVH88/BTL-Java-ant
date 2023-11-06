@@ -27,7 +27,7 @@ import org.json.JSONObject;
  *
  * @author DELL
  */
-@WebServlet(name="ArticleReact", urlPatterns={"/article/react"})
+@WebServlet(name="ReactionArticleServlet", urlPatterns={"/article/react"})
 public class ReactionArticleServlet extends HttpServlet {   
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -39,12 +39,12 @@ public class ReactionArticleServlet extends HttpServlet {
             while ((line = reader.readLine()) != null) {
                 json.append(line);
             }
-            JSONObject jsonObject = new JSONObject(json);
+            JSONObject jsonObject = new JSONObject(json.toString());
             int article_id = jsonObject.getInt("article_id");
             int user_id = jsonObject.getInt("user_id");
+            boolean reaction_type = jsonObject.getBoolean("reaction_type");
             UserDAO ud = new UserDAO();
             ArticleDAO ad = new ArticleDAO();
-            boolean reaction_type = jsonObject.getBoolean("reaction_type");
             ReactionArticleDAO rad = new ReactionArticleDAO();
             ReactionArticle ra = rad.getByArticleAndUser(article_id, user_id);
             

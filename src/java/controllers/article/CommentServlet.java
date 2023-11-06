@@ -41,7 +41,7 @@ public class CommentServlet extends HttpServlet {
             while ((line = reader.readLine()) != null) {
                 json.append(line);
             }
-            JSONObject jsonObject = new JSONObject(json);
+            JSONObject jsonObject = new JSONObject(json.toString());
             int user_id = jsonObject.getInt("user_id");
             int article_id = jsonObject.getInt("article_id");
             String comment_content = jsonObject.getString("content");

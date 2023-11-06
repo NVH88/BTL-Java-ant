@@ -5,7 +5,7 @@
 
 package controllers.article;
 
-import dal.articleDAO.ArticleDAO;
+import dal.articleDAO.CommentDAO;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -22,7 +22,7 @@ import org.json.JSONObject;
  *
  * @author Hanh
  */
-@WebServlet(name="DeleteArticle", urlPatterns={"/article/delete_comment"})
+@WebServlet(name="DeleteComment", urlPatterns={"/article/delete_comment"})
 public class DeleteComment extends HttpServlet {
     
     @Override
@@ -35,10 +35,10 @@ public class DeleteComment extends HttpServlet {
             while ((line = reader.readLine()) != null) {
                 json.append(line);
             }
-            JSONObject jsonObject = new JSONObject(json);
-            int article_id = jsonObject.getInt("comment_id");
-            ArticleDAO ad = new ArticleDAO();
-            ad.deleteObject(article_id);            
+            JSONObject jsonObject = new JSONObject(json.toString());
+            int comment_id = jsonObject.getInt("comment_id");
+            CommentDAO cd = new CommentDAO();
+            cd.deleteObject(comment_id);            
             
             String jsonString = "{\"message\": \"delete successfully\"}";
             response.setContentType("application/json");

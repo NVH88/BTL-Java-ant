@@ -37,13 +37,14 @@ public class ApproveArticleServlet extends HttpServlet {
             while ((line = reader.readLine()) != null) {
                 json.append(line);
             }
-            JSONObject jsonObject = new JSONObject(json);
+            JSONObject jsonObject = new JSONObject(json.toString());
             int article_id = jsonObject.getInt("article_id");
             boolean stt = jsonObject.getBoolean("status");
             
             // gọi user ở đây (getUserById)
             ArticleDAO ad = new ArticleDAO();
             Article art = (Article) ad.getById(article_id);
+            System.out.println(art);
             if (stt) {
                 art.setStt(true);
             } else {
@@ -54,7 +55,7 @@ public class ApproveArticleServlet extends HttpServlet {
             String json2 = gson.toJson(list);
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(json2);
+            response.getWriter().write(json2); // cần xem phần user sẽ gửi gì?
         } catch (JSONException ex) {
             Logger.getLogger(CommentServlet.class.getName()).log(Level.SEVERE, null, ex);
         } 
