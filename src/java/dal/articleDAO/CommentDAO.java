@@ -95,10 +95,14 @@ public class CommentDAO extends DAO{
 
     @Override
     public List<Object> getAllObjects() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public ArrayList<Comment> getAllCommentByArticleID(int article_id) {
         try {
-            String sql = "select * from comments";
+            String sql = "select * from comments where article_id = " + article_id;
             PreparedStatement st = con.prepareStatement(sql);
-            List<Object> list = new ArrayList<>();
+            ArrayList<Comment> list = new ArrayList<>();
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
                 list.add(new Comment(rs.getInt("comment_id"), rs.getInt("likes"), 
