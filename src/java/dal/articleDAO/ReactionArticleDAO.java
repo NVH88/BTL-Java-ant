@@ -4,11 +4,8 @@
  */
 package dal.articleDAO;
 
-import Model.Article.Article;
 import Model.Article.ReactionArticle;
-import Model.User.User;
 import dal.DAO.DAO;
-import dal.userDAO.UserDAO;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -30,10 +27,8 @@ public class ReactionArticleDAO extends DAO{
             PreparedStatement st = con.prepareStatement(sql);
             ResultSet rs = st.executeQuery();
             if (rs.next()) {
-                UserDAO ud = new UserDAO();
-                User user = (User) ud.getById(rs.getInt("user_id"));
                 return new ReactionArticle(rs.getInt("reaction_article_id"), rs.getBoolean("reaction_type"), 
-                user, (Article)ad.getById(rs.getInt("article_id")));
+                rs.getInt("user_id"), rs.getInt("article_id"));
             }
         } catch (SQLException e) {
             System.out.println(e);
@@ -48,9 +43,9 @@ public class ReactionArticleDAO extends DAO{
             String sql = "insert into reaction_articles(user_id, article_id, reaction_type) "
                     + "value(?, ?, ?)";
             PreparedStatement st = con.prepareStatement(sql);
-            st.setInt(1, react.getUser().getUser_id());
-            st.setInt(2, react.getArticle().getArticle_id());
-            st.setBoolean(3, react.isReation_type());
+            st.setInt(1, react.getUserId());
+            st.setInt(2, react.getArticleId());
+            st.setBoolean(3, react.isReationType());
             st.executeUpdate();
             System.out.println("scs");
             return true;
@@ -66,7 +61,7 @@ public class ReactionArticleDAO extends DAO{
             ReactionArticle react = (ReactionArticle)object;
             String sql = "update reaction_articles set reaction_type = ?";
             PreparedStatement st = con.prepareStatement(sql);
-            st.setBoolean(1, react.isReation_type());
+            st.setBoolean(1, react.isReationType());
             st.executeUpdate();
 //            System.out.println("scs");
             return true;
@@ -96,10 +91,6 @@ public class ReactionArticleDAO extends DAO{
     
     public ReactionArticle getByArticleAndUser(int article_id, int user_id) {
         try {
-            ArticleDAO ad = new ArticleDAO();
-            Article art = (Article) ad.getById(article_id);
-            UserDAO ud = new UserDAO();
-            User u = (User) ud.getById(user_id);
             String sql = "select * from reaction_articles where user_id = ? and article_id = ?";
             PreparedStatement st = con.prepareStatement(sql);
             st.setInt(1, user_id);
@@ -107,7 +98,7 @@ public class ReactionArticleDAO extends DAO{
             ResultSet rs = st.executeQuery();
             if (rs.next()) {
                 return new ReactionArticle(rs.getInt("reaction_article_id"), 
-                        rs.getBoolean("reaction_type"), u, art);
+                        rs.getBoolean("reaction_type"), rs.getInt("user_id"), rs.getInt("user_id"));
             }
         } catch (SQLException ex) {
             Logger.getLogger(ReactionArticleDAO.class.getName()).log(Level.SEVERE, null, ex);

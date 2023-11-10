@@ -4,7 +4,6 @@
  */
 package Model.Article;
 
-import Model.User.User;
 import java.sql.Date;
 
 /**
@@ -12,33 +11,36 @@ import java.sql.Date;
  * @author Hanh
  */
 public class Article {
-    private int article_id, likes, dislikes, reports;
-    private String article_name, article_category, article_tag, content, image;
-    private Date time_submit, time_accept;
+    private int articleId, userId, likes, dislikes, reports;
+    private String articleName, articleCategory, articleDescription, content, image;
+    private Date timeSubmit, timeAccept;
     private boolean stt;
-    private User user; // fake
 
-    public Article(int article_id, int likes, int dislikes, int reports, 
-            String article_name, String article_category, String article_tag, 
-            String content, String image, Date time_submit, Date time_accept, 
-            boolean stt, User user) {
-        this.article_id = article_id;
+    public Article(int articleId, int likes, int dislikes, int reports, 
+            String articleName, String articleCategory, String articleDescription, 
+            String content, String image, Date timeSubmit, Date timeAccept, 
+            boolean stt, int userId) {
+        this.articleId = articleId;
         this.likes = likes;
         this.dislikes = dislikes;
         this.reports = reports;
-        this.article_name = article_name;
-        this.article_category = article_category;
-        this.article_tag = article_tag;
+        this.articleName = articleName;
+        this.articleCategory = articleCategory;
+        this.articleDescription = articleDescription;
         this.content = content;
         this.image = image;
-        this.time_submit = time_submit;
-        this.time_accept = time_accept;
+        this.timeSubmit = timeSubmit;
+        this.timeAccept = timeAccept;
         this.stt = stt;
-        this.user = user;
+        this.userId = userId;
     }
 
-    public int getArticle_id() {
-        return article_id;
+    public int getArticleId() {
+        return articleId;
+    }
+
+    public int getUserId() {
+        return userId;
     }
 
     public int getLikes() {
@@ -53,16 +55,16 @@ public class Article {
         return reports;
     }
 
-    public String getArticle_name() {
-        return article_name;
+    public String getArticleName() {
+        return articleName;
     }
 
-    public String getArticle_category() {
-        return article_category;
+    public String getArticleCategory() {
+        return articleCategory;
     }
 
-    public String getArticle_tag() {
-        return article_tag;
+    public String getArticleDescription() {
+        return articleDescription;
     }
 
     public String getContent() {
@@ -73,34 +75,32 @@ public class Article {
         return image;
     }
 
-    public Date getTime_submit() {
-        return time_submit;
+    public Date getTimeSubmit() {
+        return timeSubmit;
     }
 
-    public Date getTime_accept() {
-        return time_accept;
+    public Date getTimeAccept() {
+        return timeAccept;
     }
 
     public boolean isStt() {
         return stt;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setArticle_name(String article_name) {
-        this.article_name = article_name;
-    }
-
     public void setStt(boolean stt) {
         this.stt = stt;
     }
-    
+
+    public void setLikes(int likes) {
+        this.likes = likes;
+    }
+
+    public void setDislikes(int dislikes) {
+        this.dislikes = dislikes;
+    }
+
     @Override
     public String toString() {
-        return "Article{" + "article_id=" + article_id + ", likes=" + likes + ", dislikes=" + dislikes + ", reports=" + reports + ", article_name=" + article_name + ", article_category=" + article_category + ", article_tag=" + article_tag + ", content=" + content + ", image=" + image + ", time_submit=" + time_submit + ", time_accept=" + time_accept + ", stt=" + stt + ", user=" + user + '}';
+        return "Article{" + "articleId=" + articleId + ", userId=" + userId + ", likes=" + likes + ", dislikes=" + dislikes + ", reports=" + reports + ", articleName=" + articleName + ", articleCategory=" + articleCategory + ", articleDescription=" + articleDescription + ", content=" + content + ", image=" + image + ", timeSubmit=" + timeSubmit + ", timeAccept=" + timeAccept + ", stt=" + stt + '}';
     }
-    
-    
 }

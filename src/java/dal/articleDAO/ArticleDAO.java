@@ -5,9 +5,7 @@
 package dal.articleDAO;
 
 import Model.Article.Article;
-import Model.User.User;
 import dal.DAO.DAO;
-import dal.userDAO.UserDAO;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -28,13 +26,11 @@ public class ArticleDAO extends DAO{
             PreparedStatement st = con.prepareStatement(sql);
             ResultSet rs = st.executeQuery();
             if (rs.next()) {
-                UserDAO ud = new UserDAO();
-                User user = (User) ud.getById(rs.getInt("user_id"));
                 return new Article(rs.getInt("article_id"), rs.getInt("likes"),
                 rs.getInt("dislikes"), rs.getInt("reports"), rs.getString("article_name"),
-                rs.getString("article_category"), rs.getString("article_tag"),
+                rs.getString("article_category"), rs.getString("article_description"),
                 rs.getString("content"), rs.getString("image"), rs.getDate("time_submit"),
-                rs.getDate("time_accept"), rs.getBoolean("stt"), user);
+                rs.getDate("time_accept"), rs.getBoolean("stt"), rs.getInt("user_id"));
             }
         } catch (SQLException e) {
             System.out.println(e);
@@ -46,21 +42,21 @@ public class ArticleDAO extends DAO{
     public boolean addObject(Object object) {
         try {
             Article art = (Article)object;
-            String sql = "insert into articles(article_name, article_category, article_tag,"
+            String sql = "insert into articles(article_name, article_category, article_description,"
                     + "content, image, time_submit, time_accept, likes, dislikes, reports,"
                     + "user_id, stt) value(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement st = con.prepareStatement(sql);
-            st.setString(1, art.getArticle_name());
-            st.setString(2, art.getArticle_category());
-            st.setString(3, art.getArticle_tag());
+            st.setString(1, art.getArticleName());
+            st.setString(2, art.getArticleCategory());
+            st.setString(3, art.getArticleDescription());
             st.setString(4, art.getContent());
             st.setString(5, art.getImage());
-            st.setDate(6, art.getTime_submit());
-            st.setDate(7, art.getTime_accept());
+            st.setDate(6, art.getTimeSubmit());
+            st.setDate(7, art.getTimeAccept());
             st.setInt(8, art.getLikes());
             st.setInt(9, art.getDislikes());
             st.setInt(10, art.getReports());
-            st.setInt(11, art.getUser().getUser_id());
+            st.setInt(11, art.getUserId());
             st.setBoolean(12, art.isStt());
             st.executeUpdate();
 //            System.out.println("scs");
@@ -78,11 +74,11 @@ public class ArticleDAO extends DAO{
             String sql = "update articles set article_name = ?, article_category =?,"
                     + " article_tag = ?, content = ?, image = ?,"
                     + " likes = ?, dislikes = ?, reports = ?, stt = ? where article_id = " 
-                    + art.getArticle_id();
+                    + art.getArticleId();
             PreparedStatement st = con.prepareStatement(sql);
-            st.setString(1, art.getArticle_name());
-            st.setString(2, art.getArticle_category());
-            st.setString(3, art.getArticle_tag());
+            st.setString(1, art.getArticleName());
+            st.setString(2, art.getArticleCategory());
+            st.setString(3, art.getArticleDescription());
             st.setString(4, art.getContent());
             st.setString(5, art.getImage());
             st.setInt(6, art.getLikes());
@@ -117,48 +113,27 @@ public class ArticleDAO extends DAO{
         return null;
     }
     
-    public ArrayList<Article> getListArticleAccepted() {
+    public ArrayList<Article> getListArticle(String attribute, String type) {
         try {
-            String sql = "select * from articles where stt = 1";
+            String sql = "select * from articles where " + attribute + " = " + type;
+            if (attribute.equals("category")) {
+                sql += " and stt = 1";
+            }
             PreparedStatement st = con.prepareStatement(sql);
             ResultSet rs = st.executeQuery();
             ArrayList<Article> arr = new ArrayList<>();
             while (rs.next()) {
-                UserDAO ud = new UserDAO();
-                User user = (User) ud.getById(rs.getInt("user_id"));
                 arr.add(new Article(rs.getInt("article_id"), rs.getInt("likes"),
                 rs.getInt("dislikes"), rs.getInt("reports"), rs.getString("article_name"),
-                rs.getString("article_category"), rs.getString("article_tag"),
+                rs.getString("article_category"), rs.getString("article_description"),
                 rs.getString("content"), rs.getString("image"), rs.getDate("time_submit"),
-                rs.getDate("time_accept"), rs.getBoolean("stt"), user));
+                rs.getDate("time_accept"), rs.getBoolean("stt"), rs.getInt("user_id")));
             }
             return arr;
 //            System.out.println("scs");
         } catch (SQLException e) {
 //            System.out.println(e);
         }
-        return null;
-    }
-    public ArrayList<Article> getListArticleInQueue() {
-        try {
-            String sql = "select * from articles where stt = 0";
-            PreparedStatement st = con.prepareStatement(sql);
-            ResultSet rs = st.executeQuery();
-            ArrayList<Article> arr = new ArrayList<>();
-            while (rs.next()) {
-                UserDAO ud = new UserDAO();
-                User user = (User) ud.getById(rs.getInt("user_id"));
-                arr.add(new Article(rs.getInt("article_id"), rs.getInt("likes"),
-                rs.getInt("dislikes"), rs.getInt("reports"), rs.getString("article_name"),
-                rs.getString("article_category"), rs.getString("article_tag"),
-                rs.getString("content"), rs.getString("image"), rs.getDate("time_submit"),
-                rs.getDate("time_accept"), rs.getBoolean("stt"), user));
-            }
-            return arr;
-//            System.out.println("scs");
-        } catch (SQLException e) {
-//            System.out.println(e);
-        }
-        return null;
+        return null; 
     }
 }

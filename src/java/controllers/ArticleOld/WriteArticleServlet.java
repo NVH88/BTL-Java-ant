@@ -4,13 +4,10 @@
 // */
 //
 //package controllers.article;
-////
-////import controllers.ArticleOld.*;
+//
 //import Model.Article.Article;
-//import Model.Article.Comment;
 //import Model.User.User;
 //import dal.articleDAO.ArticleDAO;
-//import dal.articleDAO.CommentDAO;
 //import dal.userDAO.UserDAO;
 //import java.io.IOException;
 //import jakarta.servlet.ServletException;
@@ -29,8 +26,8 @@
 // *
 // * @author Hanh
 // */
-//@WebServlet(name="CommentServlet", urlPatterns={"/article/comment"})
-//public class CommentServlet extends HttpServlet {
+//@WebServlet(name="WriteArticleServletOld", urlPatterns={"/article/write_old"})
+//public class WriteArticleServlet extends HttpServlet {
 //    
 //    @Override
 //    protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -42,28 +39,38 @@
 //            while ((line = reader.readLine()) != null) {
 //                json.append(line);
 //            }
+//            
 //            JSONObject jsonObject = new JSONObject(json.toString());
 //            int user_id = jsonObject.getInt("user_id");
-//            int article_id = jsonObject.getInt("article_id");
-//            String comment_content = jsonObject.getString("content");
+//            String article_name = jsonObject.getString("article_name");
+//            String image = jsonObject.getString("image");
+//            String content = jsonObject.getString("content");
+//            String article_category = jsonObject.getString("article_category");
+//            String article_tag = jsonObject.getString("article_tag");
 //            
-//            // gọi user ở đây (getUserById)
 //            UserDAO ud = new UserDAO();
 //            User user = (User) ud.getById(user_id);
 //            Date today = new Date(System.currentTimeMillis());
+//            boolean stt = false;         
+//            if (user.getUser_role() == 2) {
+//                stt = true;
+//            }
+//            Article art = new Article(0, 0, 0, 0, article_name, article_category,
+//                    article_tag, content, image, today, today, stt, user);
 //            ArticleDAO ad = new ArticleDAO();
-//            Article art = (Article) ad.getById(article_id);
-//            
-//            Comment cmt = new Comment(0, 0, 0, comment_content, today, art, user);
-//            CommentDAO cd = new CommentDAO();
-//            cd.addObject(cmt);
-//
-//            String jsonString = "{\"message\": \"comment successfully\"}";
-//            response.setContentType("application/json");
+//            ad.addObject(art);
+//            String jsonString;
+//            if (stt) {
+//                jsonString = "{\"message\": \"Your article has been posted.\"}";
+//            } else {
+//                jsonString = "{\"message\": \"Your post has been sent, admin will review and approve your post. Thank you for your contribution.\"}";
+//            }
+//          
+//            response.setContentType("application/json"); 
 //            response.setCharacterEncoding("UTF-8");
 //            response.getWriter().write(jsonString);
 //        } catch (JSONException ex) {
-//            Logger.getLogger(CommentServlet.class.getName()).log(Level.SEVERE, null, ex);
+//            Logger.getLogger(WriteArticleServlet.class.getName()).log(Level.SEVERE, null, ex);
 //        }
 //    }
 //}

@@ -4,13 +4,12 @@
 // */
 //
 //package controllers.article;
-////
-////import controllers.ArticleOld.*;
+//
 //import Model.Article.Article;
-//import Model.Article.Comment;
+//import Model.Article.ReactionArticle;
 //import Model.User.User;
 //import dal.articleDAO.ArticleDAO;
-//import dal.articleDAO.CommentDAO;
+//import dal.articleDAO.ReactionArticleDAO;
 //import dal.userDAO.UserDAO;
 //import java.io.IOException;
 //import jakarta.servlet.ServletException;
@@ -19,7 +18,6 @@
 //import jakarta.servlet.http.HttpServletRequest;
 //import jakarta.servlet.http.HttpServletResponse;
 //import java.io.BufferedReader;
-//import java.sql.Date;
 //import java.util.logging.Level;
 //import java.util.logging.Logger;
 //import org.json.JSONException;
@@ -27,11 +25,10 @@
 //
 ///**
 // *
-// * @author Hanh
+// * @author DELL
 // */
-//@WebServlet(name="CommentServlet", urlPatterns={"/article/comment"})
-//public class CommentServlet extends HttpServlet {
-//    
+//@WebServlet(name="ReactionArticleServlet", urlPatterns={"/article/reactOld"})
+//public class ReactionArticleServlet extends HttpServlet {   
 //    @Override
 //    protected void doPost(HttpServletRequest request, HttpServletResponse response)
 //    throws ServletException, IOException {
@@ -43,27 +40,33 @@
 //                json.append(line);
 //            }
 //            JSONObject jsonObject = new JSONObject(json.toString());
-//            int user_id = jsonObject.getInt("user_id");
 //            int article_id = jsonObject.getInt("article_id");
-//            String comment_content = jsonObject.getString("content");
-//            
-//            // gọi user ở đây (getUserById)
+//            int user_id = jsonObject.getInt("user_id");
+//            boolean reaction_type = jsonObject.getBoolean("reaction_type");
 //            UserDAO ud = new UserDAO();
-//            User user = (User) ud.getById(user_id);
-//            Date today = new Date(System.currentTimeMillis());
 //            ArticleDAO ad = new ArticleDAO();
-//            Article art = (Article) ad.getById(article_id);
+//            ReactionArticleDAO rad = new ReactionArticleDAO();
+//            ReactionArticle ra = rad.getByArticleAndUser(article_id, user_id);
 //            
-//            Comment cmt = new Comment(0, 0, 0, comment_content, today, art, user);
-//            CommentDAO cd = new CommentDAO();
-//            cd.addObject(cmt);
-//
-//            String jsonString = "{\"message\": \"comment successfully\"}";
+//            if (ra == null) {
+//                ra = new ReactionArticle(0, reaction_type, (User)ud.getById(user_id), 
+//                        (Article)ad.getById(article_id));
+//                rad.addObject(ra);
+//            } else {
+//                if (reaction_type == ra.isReation_type()) {
+//                    rad.deleteObject(ra.getReaction_article_id());
+//                } else {
+//                    ra.setReation_type(!reaction_type);
+//                    rad.updateObject(ra);
+//                }
+//            }
+//            
+//            String jsonString = "{\"message\": \"successfully\"}";
 //            response.setContentType("application/json");
 //            response.setCharacterEncoding("UTF-8");
 //            response.getWriter().write(jsonString);
 //        } catch (JSONException ex) {
-//            Logger.getLogger(CommentServlet.class.getName()).log(Level.SEVERE, null, ex);
+//            Logger.getLogger(DeleteArticle.class.getName()).log(Level.SEVERE, null, ex);
 //        }
 //    }
 //}

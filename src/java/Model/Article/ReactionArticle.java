@@ -11,41 +11,38 @@ import Model.User.User;
  * @author Hanh
  */
 public class ReactionArticle {
-    private int reaction_article_id;
-    private boolean reation_type;
-    private User user;
-    private Article article;
+    private int reactionArticleId, articleId, userId;
+    private boolean reationType;
 
-    public ReactionArticle(int reaction_article_id, boolean reation_type, User user, Article article) {
-        this.reaction_article_id = reaction_article_id;
-        this.reation_type = reation_type;
-        this.user = user;
-        this.article = article;
+    public ReactionArticle(int reactionArticleId, boolean reationType, int userId, int articleId) {
+        this.reactionArticleId = reactionArticleId;
+        this.reationType = reationType;
+        this.userId = userId;
+        this.articleId = articleId;
     }
 
-    public int getReaction_article_id() {
-        return reaction_article_id;
+    public int getReactionArticleId() {
+        return reactionArticleId;
     }
 
-    public boolean isReation_type() {
-        return reation_type;
+    public int getArticleId() {
+        return articleId;
     }
 
-    public User getUser() {
-        return user;
+    public int getUserId() {
+        return userId;
     }
 
-    public Article getArticle() {
-        return article;
+    public boolean isReationType() {
+        return reationType;
     }
 
-    public void setReation_type(boolean reation_type) {
-        this.reation_type = reation_type;
+    public void setReationType(boolean reationType) {
+        this.reationType = reationType;
     }
 
     @Override
     public String toString() {
-        return "ReactionArticle{" + "reaction_article_id=" + reaction_article_id + ", reation_type=" + reation_type + ", user=" + user + ", article=" + article + '}';
+        return "ReactionArticle{" + "reactionArticleId=" + reactionArticleId + ", articleId=" + articleId + ", userId=" + userId + ", reationType=" + reationType + '}';
     }
-    
 }

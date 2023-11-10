@@ -3,15 +3,11 @@
 // * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
 // */
 //
-//package controllers.article;
-////
-////import controllers.ArticleOld.*;
+//package controllers.ArticleOld;
+//
 //import Model.Article.Article;
-//import Model.Article.Comment;
-//import Model.User.User;
+//import com.google.gson.Gson;
 //import dal.articleDAO.ArticleDAO;
-//import dal.articleDAO.CommentDAO;
-//import dal.userDAO.UserDAO;
 //import java.io.IOException;
 //import jakarta.servlet.ServletException;
 //import jakarta.servlet.annotation.WebServlet;
@@ -19,7 +15,7 @@
 //import jakarta.servlet.http.HttpServletRequest;
 //import jakarta.servlet.http.HttpServletResponse;
 //import java.io.BufferedReader;
-//import java.sql.Date;
+//import java.util.ArrayList;
 //import java.util.logging.Level;
 //import java.util.logging.Logger;
 //import org.json.JSONException;
@@ -27,11 +23,10 @@
 //
 ///**
 // *
-// * @author Hanh
+// * @author DELL
 // */
-//@WebServlet(name="CommentServlet", urlPatterns={"/article/comment"})
-//public class CommentServlet extends HttpServlet {
-//    
+//@WebServlet(name="ApproveArticleServlet", urlPatterns={"/article/approveOld"})
+//public class ApproveArticleServlet extends HttpServlet {
 //    @Override
 //    protected void doPost(HttpServletRequest request, HttpServletResponse response)
 //    throws ServletException, IOException {
@@ -43,27 +38,26 @@
 //                json.append(line);
 //            }
 //            JSONObject jsonObject = new JSONObject(json.toString());
-//            int user_id = jsonObject.getInt("user_id");
 //            int article_id = jsonObject.getInt("article_id");
-//            String comment_content = jsonObject.getString("content");
+//            boolean stt = jsonObject.getBoolean("status");
 //            
 //            // gọi user ở đây (getUserById)
-//            UserDAO ud = new UserDAO();
-//            User user = (User) ud.getById(user_id);
-//            Date today = new Date(System.currentTimeMillis());
 //            ArticleDAO ad = new ArticleDAO();
 //            Article art = (Article) ad.getById(article_id);
-//            
-//            Comment cmt = new Comment(0, 0, 0, comment_content, today, art, user);
-//            CommentDAO cd = new CommentDAO();
-//            cd.addObject(cmt);
-//
-//            String jsonString = "{\"message\": \"comment successfully\"}";
-//            response.setContentType("application/json");
-//            response.setCharacterEncoding("UTF-8");
-//            response.getWriter().write(jsonString);
+//            System.out.println(art);
+//            if (stt) {
+//                art.setStt(true);
+//            } else {
+//                ad.deleteObject(art.getArticle_id());
+//            }
+////            ArrayList<Article> list = ad.getListArticleInQueue();
+////            Gson gson = new Gson();
+////            String json2 = gson.toJson(list);
+////            response.setContentType("application/json");
+////            response.setCharacterEncoding("UTF-8");
+////            response.getWriter().write(json2); // cần xem phần user sẽ gửi gì?
 //        } catch (JSONException ex) {
 //            Logger.getLogger(CommentServlet.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+//        } 
 //    }
 //}

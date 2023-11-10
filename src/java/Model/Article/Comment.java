@@ -12,25 +12,23 @@ import java.sql.Date;
  * @author Hanh
  */
 public class Comment {
-    private int comment_id, likes, dislikes;
-    private String comment_content;
-    private Date comment_time;
-    private Article article;
-    private User user; // fake
+    private int commentId, likes, dislikes, articleId, userId;
+    private String commentContent;
+    private Date commentTime;
 
-    public Comment(int comment_id, int likes, int dislikes, String comment_content, 
-            Date comment_time, Article article, User user) {
-        this.comment_id = comment_id;
+    public Comment(int commentId, int likes, int dislikes, String commentContent, 
+            Date commentTime, int articleId, int userId) {
+        this.commentId = commentId;
         this.likes = likes;
         this.dislikes = dislikes;
-        this.comment_content = comment_content;
-        this.comment_time = comment_time;
-        this.article = article;
-        this.user = user;
+        this.commentContent = commentContent;
+        this.commentTime = commentTime;
+        this.articleId = articleId;
+        this.userId = userId;
     }
 
-    public int getComment_id() {
-        return comment_id;
+    public int getCommentId() {
+        return commentId;
     }
 
     public int getLikes() {
@@ -41,30 +39,24 @@ public class Comment {
         return dislikes;
     }
 
-    public String getComment_content() {
-        return comment_content;
+    public int getArticleId() {
+        return articleId;
     }
 
-    public Date getComment_time() {
-        return comment_time;
+    public int getUserId() {
+        return userId;
     }
 
-    public Article getArticle() {
-        return article;
+    public String getCommentContent() {
+        return commentContent;
     }
 
-    public User getUser() {
-        return user;
-    }
-    
-    public void setComment_content(String s) {
-        this.comment_content = s;
+    public Date getCommentTime() {
+        return commentTime;
     }
 
     @Override
     public String toString() {
-        return "Comment{" + "comment_id=" + comment_id + ", likes=" + likes + ", dislikes=" + dislikes + ", comment_content=" + comment_content + ", comment_time=" + comment_time + ", article=" + article + ", user=" + user + '}';
+        return "Comment{" + "commentId=" + commentId + ", likes=" + likes + ", dislikes=" + dislikes + ", articleId=" + articleId + ", userId=" + userId + ", commentContent=" + commentContent + ", commentTime=" + commentTime + '}';
     }
-    
-    
 }

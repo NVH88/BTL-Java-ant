@@ -4,8 +4,7 @@
 // */
 //
 //package controllers.article;
-////
-////import controllers.ArticleOld.*;
+//
 //import Model.Article.Article;
 //import Model.Article.Comment;
 //import Model.User.User;
@@ -29,7 +28,7 @@
 // *
 // * @author Hanh
 // */
-//@WebServlet(name="CommentServlet", urlPatterns={"/article/comment"})
+//@WebServlet(name="CommentServletOld", urlPatterns={"/article/comment_old"})
 //public class CommentServlet extends HttpServlet {
 //    
 //    @Override

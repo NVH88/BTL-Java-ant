@@ -4,11 +4,8 @@
  */
 package dal.articleDAO;
 
-import Model.Article.Article;
 import Model.Article.Report;
-import Model.User.User;
 import dal.DAO.DAO;
-import dal.userDAO.UserDAO;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -32,8 +29,8 @@ public class ReportDAO extends DAO{
             Report report = (Report)object;
             String sql = "insert into report_article(user_id, comment_id, content) value(?, ?, ?)";
             PreparedStatement st = con.prepareStatement(sql);
-            st.setInt(1, report.getUser().getUser_id());
-            st.setInt(2, report.getArticle().getArticle_id());
+            st.setInt(1, report.getUserId());
+            st.setInt(2, report.getArticleId());
             st.setString(3, report.getContent());
             st.executeUpdate();
 //            System.out.println("scs");
@@ -51,7 +48,7 @@ public class ReportDAO extends DAO{
             String sql = "update report_article set content = ? where report_article_id = ?";
             PreparedStatement st = con.prepareStatement(sql);
             st.setString(1, report.getContent());
-            st.setInt(2, report.getReport_id());
+            st.setInt(2, report.getReportId());
             
             st.executeUpdate();
 //            System.out.println("scs");
@@ -82,15 +79,13 @@ public class ReportDAO extends DAO{
     
     public ArrayList<Report> getListByArticle(int article_id) {
         try {
-            UserDAO ud = new UserDAO();
-            ArticleDAO ad = new ArticleDAO();
             ArrayList<Report> arr = new ArrayList<>();
             String sql = "select * from report_article where aritcle_id = " + article_id;
             PreparedStatement st = con.prepareStatement(sql);
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
-                arr.add(new Report(rs.getInt("report_article_id"), (User) ud.getById(rs.getInt("user_id")),
-                    (Article) ad.getById(article_id), rs.getString("content")));
+                arr.add(new Report(rs.getInt("report_article_id"), rs.getInt("user_id"),
+                    article_id, rs.getString("content")));
             }
             return arr;
         } catch (SQLException e) {
@@ -101,8 +96,6 @@ public class ReportDAO extends DAO{
     
     public Report getByUserAndArticle(int user_id, int article_id) {
         try {
-            UserDAO ud = new UserDAO();
-            ArticleDAO ad = new ArticleDAO();
             ArrayList<Report> arr = new ArrayList<>();
             String sql = "select * from report_article where user_id = ? and aritcle_id = ?";
             PreparedStatement st = con.prepareStatement(sql);
@@ -110,8 +103,8 @@ public class ReportDAO extends DAO{
             st.setInt(2, article_id);
             ResultSet rs = st.executeQuery();
             if (rs.next()) {
-                return new Report(rs.getInt("report_article_id"), (User) ud.getById(user_id),
-                    (Article) ad.getById(article_id), rs.getString("content"));
+                return new Report(rs.getInt("report_article_id"), user_id,
+                    article_id, rs.getString("content"));
             }
         } catch (SQLException e) {
             
