@@ -57,13 +57,15 @@ public class ArticleFilter implements Filter {
             } catch (JSONException ex) {
                 response.getWriter().write("{\"message\": \"Json sai.\"}");
             }
-        } else if (method.equals("DELETE")) { // phải là chủ hoặc admin mới xóa được bài
-            try {
+        } else if (method.equals("DELETE")) { 
+            boolean ok = false;
+            try {  // phải là chủ hoặc admin mới xóa được bài, xóa khi có người ấn xóa
                 JSONObject jsonObject = new JSONObject(json.toString());
                 int userId = jsonObject.getInt("userId");
                 int articleId = jsonObject.getInt("articleId");
                 User u = (User) ud.getById(userId);
                 Article a = (Article) ad.getById(articleId);
+                ok = true;
                 if (u.getUser_role() == 2) {
                     chain.doFilter(request, response);
                 } else if (u.getUser_role() == 1 && a.getUserId() == userId) {
@@ -73,8 +75,18 @@ public class ArticleFilter implements Filter {
                     response.getWriter().write(message);
                 }
             }  catch (JSONException ex) {
-                response.getWriter().write("{\"message\": \"Json sai.\"}");
             }
+            
+            if (!ok) {
+                try { // xóa khi chủ bài viết xóa tài khoản
+                    JSONObject jsonObject = new JSONObject(json.toString());
+                    boolean byUser = jsonObject.getBoolean("byUser");
+                    int userId = jsonObject.getInt("userId");
+                    chain.doFilter(request, response);
+                } catch (JSONException ex) {
+                }
+            }
+            
         } else if (method.equals("GET")) { // phải là admin mới được vào trang duyệt bài
             String uncensored = request.getParameter("uncensored");
             if (uncensored != null) {

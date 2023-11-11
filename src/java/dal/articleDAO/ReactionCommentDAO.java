@@ -9,6 +9,7 @@ import dal.DAO.DAO;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -81,10 +82,38 @@ public class ReactionCommentDAO extends DAO{
             return false;
         }
     }
+    
+    public boolean deleteListRC (String criteria) {
+        try {
+            String sql = "delete from reaction_comments where " + criteria;
+            PreparedStatement st = con.prepareStatement(sql);
+            st.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            System.out.println(e);
+            return false;
+        }
+    }
 
     @Override
     public List<Object> getAllObjects() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+    
+    public ArrayList<ReactionComment> getListRC (String criteria) { // lấy theo tiêu chí
+        try {
+            String sql = "select * from reaction_comments where " + criteria;
+            PreparedStatement st = con.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            ArrayList<ReactionComment> list = new ArrayList<>();
+            while (rs.next()) {
+                list.add( new ReactionComment(rs.getInt("reaction_comment_id"), 
+                        rs.getBoolean("reaction_type"), rs.getInt("user_id"), rs.getInt("comment_id")));
+            }
+            return list;
+        } catch (SQLException ex) {
+        }
+        return null;
     }
     
     public ReactionComment getByCommentAndUser(int comment_id, int user_id) {

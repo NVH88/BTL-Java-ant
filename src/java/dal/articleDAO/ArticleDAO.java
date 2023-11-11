@@ -21,7 +21,6 @@ public class ArticleDAO extends DAO{
     @Override
     public Object getById(int Article_id) {
         String sql = "select * from articles where article_id = " + Article_id;
-//        System.out.println(sql);
         try {
             PreparedStatement st = con.prepareStatement(sql);
             ResultSet rs = st.executeQuery();
@@ -59,10 +58,8 @@ public class ArticleDAO extends DAO{
             st.setInt(11, art.getUserId());
             st.setBoolean(12, art.isStt());
             st.executeUpdate();
-//            System.out.println("scs");
             return true;
-        } catch (SQLException e) {        
-//            System.out.println(e);
+        } catch (SQLException e) {      
             return false;
         }
     }
@@ -105,13 +102,25 @@ public class ArticleDAO extends DAO{
             return false;
         }
     }
+    
+    public boolean deleteByUserId(int userId) { // xóa toàn bộ bài viết của 1 user
+        try {
+            String sql = "delete from articles where user_id = ?";
+            PreparedStatement st = con.prepareStatement(sql);
+            st.setInt(1, userId);
+            st.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            return false;
+        }
+    }
 
     @Override
     public List<Object> getAllObjects() {
         return null;
     }
     
-    public ArrayList<Article> getListArticle(String criteria) {
+    public ArrayList<Article> getListArticle(String criteria) { // lấy list article theo tiêu chí
         try {
             String sql = "select * from articles where " + criteria;
             PreparedStatement st = con.prepareStatement(sql);
@@ -125,9 +134,7 @@ public class ArticleDAO extends DAO{
                 rs.getTimestamp("time_accept"), rs.getBoolean("stt"), rs.getInt("user_id")));
             }
             return arr;
-//            System.out.println("scs");
         } catch (SQLException e) {
-//            System.out.println(e);
         }
         return null; 
     }

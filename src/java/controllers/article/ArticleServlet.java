@@ -47,31 +47,38 @@ public class ArticleServlet extends HttpServlet {
         ArticleDAO ad = new ArticleDAO();
         Gson gson = new Gson();
         String jsonString = "";
-
-        try { // cập nhật số like, dislike của bài viết
-            JSONObject jsonObject = new JSONObject(json.toString());
-            int articleId = jsonObject.getInt("articleId");
-            int likes = jsonObject.getInt("likes");
-            int dislikes = jsonObject.getInt("dislikes");
-            Article a = (Article) ad.getById(articleId);
-            a.setLikes(likes);
-            a.setDislikes(dislikes);
-            ad.updateObject(a);
-            jsonString = gson.toJson(a);
-        } catch (JSONException e){    
+        boolean ok = false;
+        
+        if (!ok) {
+            try { // cập nhật số like, dislike của bài viết
+                JSONObject jsonObject = new JSONObject(json.toString());
+                int articleId = jsonObject.getInt("articleId");
+                int likes = jsonObject.getInt("likes");
+                int dislikes = jsonObject.getInt("dislikes");
+                Article a = (Article) ad.getById(articleId);
+                a.setLikes(likes);
+                a.setDislikes(dislikes);
+                ad.updateObject(a);
+                jsonString = gson.toJson(a);
+                ok = true;
+            } catch (JSONException e){    
+            }
         }
         
-        try { // duyệt bài viết
-            JSONObject jsonObject = new JSONObject(json.toString());
-            int articleId = jsonObject.getInt("articleId");
-            boolean stt = jsonObject.getBoolean("stt");
-            Article a = (Article) ad.getById(articleId);
-            Timestamp now = new Timestamp(System.currentTimeMillis());
-            a.setTimeAccept(now);
-            a.setStt(stt);
-            ad.updateObject(a);
-            jsonString = gson.toJson(a);
-        } catch (JSONException e){      
+        if (!ok) {
+            try { // duyệt bài viết
+                JSONObject jsonObject = new JSONObject(json.toString());
+                int articleId = jsonObject.getInt("articleId");
+                boolean stt = jsonObject.getBoolean("stt");
+                Article a = (Article) ad.getById(articleId);
+                Timestamp now = new Timestamp(System.currentTimeMillis());
+                a.setTimeAccept(now);
+                a.setStt(stt);
+                ad.updateObject(a);
+                jsonString = gson.toJson(a);
+                ok = true;
+            } catch (JSONException e){      
+            }
         }
 
         resp.setContentType("application/json"); 
@@ -197,26 +204,38 @@ public class ArticleServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        try {
-            StringBuilder json = (StringBuilder) request.getAttribute("json");
-            
-            JSONObject jsonObject = new JSONObject(json.toString());
-            int articleId = jsonObject.getInt("articleId");
-            ArticleDAO ad = new ArticleDAO();
-            boolean delete = ad.deleteObject(articleId);
-            String jsonString = "";
-            if (delete) {
-                jsonString = "{\"message\": \"Delete successfully.\"}";    
-            } else {
-                jsonString = "{\"message\": \"Delete failed.\"}";    
+        response.setContentType("application/json"); 
+        response.setCharacterEncoding("UTF-8");
+        boolean ok = false;
+        if (!ok) {
+            try { // xóa khi có người ấn xóa bài viết
+                StringBuilder json = (StringBuilder) request.getAttribute("json");
+
+                JSONObject jsonObject = new JSONObject(json.toString());
+                int articleId = jsonObject.getInt("articleId");
+                ArticleDAO ad = new ArticleDAO();
+                ad.deleteObject(articleId);
+                String jsonString = "{\"message\": \"Delete successfully.\"}";    
+                ok = true;
+                response.getWriter().write(jsonString);
+            } catch (JSONException ex) {
             }
-            response.setContentType("application/json"); 
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(jsonString);
-        } catch (JSONException ex) {
-            response.setContentType("application/json"); 
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().write("{\"message\": \"Json sai.\"}");
+        }
+        
+        if (!ok) {
+            try { // xóa theo userId
+                StringBuilder json = (StringBuilder) request.getAttribute("json");
+
+                JSONObject jsonObject = new JSONObject(json.toString());
+                boolean byUser = jsonObject.getBoolean("byUser");
+                int userId = jsonObject.getInt("userId");
+                ArticleDAO ad = new ArticleDAO();
+                ad.deleteByUserId(userId);
+                String jsonString = "{\"message\": \"Delete successfully.\"}";  
+                ok = true;
+                response.getWriter().write(jsonString);
+            } catch (JSONException ex) {
+            }
         }
     }
 }

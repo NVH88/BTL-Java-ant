@@ -14,7 +14,6 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -142,15 +141,45 @@ public class CommentServlet extends HttpServlet {
         StringBuilder json = (StringBuilder) req.getAttribute("json");
         Gson gson = new Gson();
         String jsonString = "";
-        try {
-            JSONObject jsonObject = new JSONObject(json.toString());
-            int commentId = jsonObject.getInt("commentId");
-            CommentDAO cd = new CommentDAO();
-            cd.deleteObject(commentId);
-            jsonString = "{\"message\": \"delete successfully\"}";
-        } catch (JSONException e){
-            jsonString = "json sai";
+        boolean ok = false;
+        if (!ok) {
+            try { // có người ấn nút xóa
+                JSONObject jsonObject = new JSONObject(json.toString());
+                int commentId = jsonObject.getInt("commentId");
+                CommentDAO cd = new CommentDAO();
+                cd.deleteObject(commentId);
+                ok = true;
+                jsonString = "{\"message\": \"delete successfully\"}";
+            } catch (JSONException e){
+            }
         }
+        
+        if (!ok) {
+            try { // xóa theo article
+                JSONObject jsonObject = new JSONObject(json.toString());
+                boolean byArticle = jsonObject.getBoolean("byArticle");
+                int articleId = jsonObject.getInt("articleId");
+                CommentDAO cd = new CommentDAO();
+                cd.deleteByArticleId(articleId);
+                ok = true;
+                jsonString = "{\"message\": \"delete successfully\"}";
+            } catch (JSONException e){
+            }
+        }
+        
+        if (!ok) {
+            try { // xóa theo user
+                JSONObject jsonObject = new JSONObject(json.toString());
+                boolean byUser = jsonObject.getBoolean("byUser");
+                int userId = jsonObject.getInt("userId");
+                CommentDAO cd = new CommentDAO();
+                cd.deleteByUserId(userId);
+                ok = true;
+                jsonString = "{\"message\": \"delete successfully\"}";
+            } catch (JSONException e){
+            }
+        }
+        
         resp.setContentType("application/json"); 
         resp.setCharacterEncoding("UTF-8");
         resp.getWriter().write(jsonString);

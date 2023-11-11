@@ -92,6 +92,28 @@ public class CommentDAO extends DAO{
             return false;
         }
     }
+    
+    public boolean deleteByArticleId(int articleId) { // xóa toàn bộ comment trong 1 bài viết
+        try {
+            String sql = "delete from comments where article_id = " + articleId;
+            PreparedStatement st = con.prepareStatement(sql);
+            st.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            return false;
+        }
+    }
+    
+    public boolean deleteByUserId(int userId) { // xóa toàn bộ comment của 1 user
+        try {
+            String sql = "delete from comments where user_id = " + userId;
+            PreparedStatement st = con.prepareStatement(sql);
+            st.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            return false;
+        }
+    }
 
     @Override
     public List<Object> getAllObjects() {
