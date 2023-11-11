@@ -4,16 +4,12 @@
  */
 package filter.article;
 
-/**
- *
- * @author Hanh
- */
 import Model.Article.Article;
+import Model.Article.Comment;
 import Model.User.User;
 import dal.articleDAO.ArticleDAO;
+import dal.articleDAO.CommentDAO;
 import dal.userDAO.UserDAO;
-import java.io.IOException;
-
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -22,10 +18,15 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
+import java.io.IOException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class ArticleFilter implements Filter {
+/**
+ *
+ * @author DELL
+ */
+public class CommentFilter implements Filter{
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest)request;
@@ -35,6 +36,7 @@ public class ArticleFilter implements Filter {
         response.setCharacterEncoding("UTF-8");
         UserDAO ud = new UserDAO();
         ArticleDAO ad = new ArticleDAO();
+        CommentDAO cd = new CommentDAO();
         BufferedReader reader = req.getReader();
         StringBuilder json = new StringBuilder();
         String line;
@@ -42,13 +44,18 @@ public class ArticleFilter implements Filter {
             json.append(line);
         }
         request.setAttribute("json", json);
-
-        if (method.equals("POST")) { // đủ quyền mới cho vào post bài
+        
+        if (method.equals("DELETE")) {
             try {
                 JSONObject jsonObject = new JSONObject(json.toString());
+                int commentId = jsonObject.getInt("commentId");
                 int userId = jsonObject.getInt("userId");
                 User u = (User) ud.getById(userId);
-                if (u.getUser_role() > 0) {
+                Comment cmt = (Comment) cd.getById(commentId);
+                Article art = (Article) ad.getById(cmt.getArticleId());
+                
+                // admin, chu bai viet, chu cmt duoc xoa cmt
+                if (u.getUser_role() == 2 || art.getUserId() == userId || cmt.getUserId() == userId) {
                     chain.doFilter(request, response);
                 } else {
                     String message = "{\"message: \" \"Not enough authority!\"}";
@@ -57,39 +64,7 @@ public class ArticleFilter implements Filter {
             } catch (JSONException ex) {
                 response.getWriter().write("{\"message\": \"Json sai.\"}");
             }
-        } else if (method.equals("DELETE")) { // phải là chủ hoặc admin mới xóa được bài
-            try {
-                JSONObject jsonObject = new JSONObject(json.toString());
-                int userId = jsonObject.getInt("userId");
-                int articleId = jsonObject.getInt("articleId");
-                User u = (User) ud.getById(userId);
-                Article a = (Article) ad.getById(articleId);
-                if (u.getUser_role() == 2) {
-                    chain.doFilter(request, response);
-                } else if (u.getUser_role() == 1 && a.getUserId() == userId) {
-                    chain.doFilter(request, response);
-                } else {
-                    String message = "{\"message: \" \"Not enough authority!\"}";
-                    response.getWriter().write(message);
-                }
-            }  catch (JSONException ex) {
-                response.getWriter().write("{\"message\": \"Json sai.\"}");
-            }
-        } else if (method.equals("GET")) { // phải là admin mới được vào trang duyệt bài
-            String uncensored = request.getParameter("uncensored");
-            if (uncensored != null) {
-                String userId = request.getParameter("userId");
-                User u = (User) ud.getById(Integer.parseInt(userId));
-                if (u.getUser_role() != 2) {
-                    String message = "{\"message: \" \"Not enough authority!\"}";
-                    response.getWriter().write(message);
-                } else {
-                    chain.doFilter(request, response);
-                }
-            } else {
-                chain.doFilter(request, response);
-            }
-        } else if (method.equals("PATCH")) {
+        } else {
             chain.doFilter(request, response);
         }
     }

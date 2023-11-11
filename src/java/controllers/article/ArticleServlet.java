@@ -16,8 +16,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -43,12 +42,6 @@ public class ArticleServlet extends HttpServlet {
     
     // cập nhật số like, dislike của bài viết hoặc duyệt bài
     protected void doPatch(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-//        BufferedReader reader = req.getReader();
-//        StringBuilder json = new StringBuilder();
-//        String line;
-//        while ((line = reader.readLine()) != null) {
-//            json.append(line);
-//        }
         StringBuilder json = (StringBuilder) req.getAttribute("json");
         
         ArticleDAO ad = new ArticleDAO();
@@ -66,9 +59,6 @@ public class ArticleServlet extends HttpServlet {
             ad.updateObject(a);
             jsonString = gson.toJson(a);
         } catch (JSONException e){    
-            resp.setContentType("application/json"); 
-            resp.setCharacterEncoding("UTF-8");
-            resp.getWriter().write("Json sai");
         }
         
         try { // duyệt bài viết
@@ -76,13 +66,12 @@ public class ArticleServlet extends HttpServlet {
             int articleId = jsonObject.getInt("articleId");
             boolean stt = jsonObject.getBoolean("stt");
             Article a = (Article) ad.getById(articleId);
+            Timestamp now = new Timestamp(System.currentTimeMillis());
+            a.setTimeAccept(now);
             a.setStt(stt);
             ad.updateObject(a);
             jsonString = gson.toJson(a);
         } catch (JSONException e){      
-            resp.setContentType("application/json"); 
-            resp.setCharacterEncoding("UTF-8");
-            resp.getWriter().write("Json sai");
         }
 
         resp.setContentType("application/json"); 
@@ -166,12 +155,6 @@ public class ArticleServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         try {
-//            BufferedReader reader = request.getReader();
-//            StringBuilder json = new StringBuilder();
-//            String line;
-//            while ((line = reader.readLine()) != null) {
-//                json.append(line);
-//            } // da co o filter
             StringBuilder json = (StringBuilder) request.getAttribute("json");
             
             JSONObject jsonObject = new JSONObject(json.toString());
@@ -184,13 +167,13 @@ public class ArticleServlet extends HttpServlet {
             
             UserDAO ud = new UserDAO();
             User user = (User) ud.getById(userId);
-            Date today = new Date(System.currentTimeMillis());
+            Timestamp now = new Timestamp(System.currentTimeMillis());
             boolean stt = false;         
             if (user.getUser_role() == 2) {
                 stt = true;
             }
             Article art = new Article(0, 0, 0, 0, articleName, articleCategory,
-                    articleDescription, content, image, today, today, stt, userId);
+                    articleDescription, content, image, now, now, stt, userId);
             ArticleDAO ad = new ArticleDAO();
             ad.addObject(art);
             String jsonString;
@@ -206,7 +189,7 @@ public class ArticleServlet extends HttpServlet {
         } catch (JSONException ex) {
             response.setContentType("application/json"); 
             response.setCharacterEncoding("UTF-8");
-            response.getWriter().write("Json sai");
+            response.getWriter().write("{\"message\": \"Json sai.\"}");
         }
     }
     
@@ -215,27 +198,25 @@ public class ArticleServlet extends HttpServlet {
     protected void doDelete(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         try {
-//            BufferedReader reader = request.getReader();
-//            StringBuilder json = new StringBuilder();
-//            String line;
-//            while ((line = reader.readLine()) != null) {
-//                json.append(line);
-//            }
             StringBuilder json = (StringBuilder) request.getAttribute("json");
             
             JSONObject jsonObject = new JSONObject(json.toString());
             int articleId = jsonObject.getInt("articleId");
             ArticleDAO ad = new ArticleDAO();
-            ad.deleteObject(articleId);
-            
-            String jsonString = "{\"message\": \"Delete successfully.\"}";            
+            boolean delete = ad.deleteObject(articleId);
+            String jsonString = "";
+            if (delete) {
+                jsonString = "{\"message\": \"Delete successfully.\"}";    
+            } else {
+                jsonString = "{\"message\": \"Delete failed.\"}";    
+            }
             response.setContentType("application/json"); 
             response.setCharacterEncoding("UTF-8");
             response.getWriter().write(jsonString);
         } catch (JSONException ex) {
             response.setContentType("application/json"); 
             response.setCharacterEncoding("UTF-8");
-            response.getWriter().write("Json sai");
+            response.getWriter().write("{\"message\": \"Json sai.\"}");
         }
     }
 }

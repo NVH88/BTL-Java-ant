@@ -29,8 +29,8 @@ public class ArticleDAO extends DAO{
                 return new Article(rs.getInt("article_id"), rs.getInt("likes"),
                 rs.getInt("dislikes"), rs.getInt("reports"), rs.getString("article_name"),
                 rs.getString("article_category"), rs.getString("article_description"),
-                rs.getString("content"), rs.getString("image"), rs.getDate("time_submit"),
-                rs.getDate("time_accept"), rs.getBoolean("stt"), rs.getInt("user_id"));
+                rs.getString("content"), rs.getString("image"), rs.getTimestamp("time_submit"),
+                rs.getTimestamp("time_accept"), rs.getBoolean("stt"), rs.getInt("user_id"));
             }
         } catch (SQLException e) {
             System.out.println(e);
@@ -51,8 +51,8 @@ public class ArticleDAO extends DAO{
             st.setString(3, art.getArticleDescription());
             st.setString(4, art.getContent());
             st.setString(5, art.getImage());
-            st.setDate(6, art.getTimeSubmit());
-            st.setDate(7, art.getTimeAccept());
+            st.setTimestamp(6, art.getTimeSubmit());
+            st.setTimestamp(7, art.getTimeAccept());
             st.setInt(8, art.getLikes());
             st.setInt(9, art.getDislikes());
             st.setInt(10, art.getReports());
@@ -73,7 +73,7 @@ public class ArticleDAO extends DAO{
             Article art = (Article)object;
             String sql = "update articles set article_name = ?, article_category = ?,"
                     + " article_description = ?, content = ?, image = ?,"
-                    + " likes = ?, dislikes = ?, reports = ?, stt = ? where article_id = " 
+                    + " likes = ?, dislikes = ?, reports = ?, stt = ?, time_accept = ? where article_id = " 
                     + art.getArticleId();
             PreparedStatement st = con.prepareStatement(sql);
             st.setString(1, art.getArticleName());
@@ -85,16 +85,10 @@ public class ArticleDAO extends DAO{
             st.setInt(7, art.getDislikes());
             st.setInt(8, art.getReports());
             st.setBoolean(9, art.isStt());
-//            if (art.isStt()) {
-//                st.setInt(9, 1);
-//            } else {
-//                st.setInt(9, 0);
-//            }
+            st.setTimestamp(10, art.getTimeAccept());
             st.executeUpdate();
-//            System.out.println("scs");
             return true;
         } catch (SQLException e) {
-//            System.out.println(e);
             return false;
         }
     }
@@ -102,13 +96,12 @@ public class ArticleDAO extends DAO{
     @Override
     public boolean deleteObject(int objectId) {
         try {
-            String sql = "delete from articles where article_id = " + objectId;
+            String sql = "delete from articles where article_id = ?";
             PreparedStatement st = con.prepareStatement(sql);
+            st.setInt(1, objectId);
             st.executeUpdate();
-//            System.out.println("scs");
             return true;
         } catch (SQLException e) {
-//            System.out.println(e);
             return false;
         }
     }
@@ -128,8 +121,8 @@ public class ArticleDAO extends DAO{
                 arr.add(new Article(rs.getInt("article_id"), rs.getInt("likes"),
                 rs.getInt("dislikes"), rs.getInt("reports"), rs.getString("article_name"),
                 rs.getString("article_category"), rs.getString("article_description"),
-                rs.getString("content"), rs.getString("image"), rs.getDate("time_submit"),
-                rs.getDate("time_accept"), rs.getBoolean("stt"), rs.getInt("user_id")));
+                rs.getString("content"), rs.getString("image"), rs.getTimestamp("time_submit"),
+                rs.getTimestamp("time_accept"), rs.getBoolean("stt"), rs.getInt("user_id")));
             }
             return arr;
 //            System.out.println("scs");

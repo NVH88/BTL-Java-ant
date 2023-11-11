@@ -4,8 +4,7 @@
  */
 package Model.Article;
 
-import Model.User.User;
-import java.sql.Date;
+import java.sql.Timestamp;
 
 /**
  *
@@ -14,10 +13,10 @@ import java.sql.Date;
 public class Comment {
     private int commentId, likes, dislikes, articleId, userId;
     private String commentContent;
-    private Date commentTime;
+    private Timestamp commentTime;
 
     public Comment(int commentId, int likes, int dislikes, String commentContent, 
-            Date commentTime, int articleId, int userId) {
+            Timestamp commentTime, int articleId, int userId) {
         this.commentId = commentId;
         this.likes = likes;
         this.dislikes = dislikes;
@@ -51,8 +50,16 @@ public class Comment {
         return commentContent;
     }
 
-    public Date getCommentTime() {
+    public Timestamp getCommentTime() {
         return commentTime;
+    }
+
+    public void setLikes(int likes) {
+        this.likes = likes;
+    }
+
+    public void setDislikes(int dislikes) {
+        this.dislikes = dislikes;
     }
 
     @Override

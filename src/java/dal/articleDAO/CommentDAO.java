@@ -28,8 +28,8 @@ public class CommentDAO extends DAO{
             if (rs.next()) {
                 return new Comment(rs.getInt("comment_id"), rs.getInt("likes"), 
                         rs.getInt("dislikes"), rs.getString("comment_content"), 
-                        rs.getDate("comment_time"), rs.getInt("article_id"),
-                        rs.getInt("article_id"));
+                        rs.getTimestamp("comment_time"), rs.getInt("article_id"),
+                        rs.getInt("user_id"));
             }
         } catch (SQLException e) {
             System.out.println(e);
@@ -47,7 +47,7 @@ public class CommentDAO extends DAO{
             st.setInt(1, comment.getArticleId());
             st.setInt(2, comment.getUserId());
             st.setString(3, comment.getCommentContent());
-            st.setDate(4, comment.getCommentTime());
+            st.setTimestamp(4, comment.getCommentTime());
             st.setInt(5, comment.getLikes());
             st.setInt(6, comment.getDislikes());
             st.executeUpdate();
@@ -67,7 +67,7 @@ public class CommentDAO extends DAO{
                     + " likes = ?, dislikes = ? where comment_id = ?";
             PreparedStatement st = con.prepareStatement(sql);
             st.setString(1, cmt.getCommentContent());
-            st.setDate(2, cmt.getCommentTime());
+            st.setTimestamp(2, cmt.getCommentTime());
             st.setInt(3, cmt.getLikes());
             st.setInt(4, cmt.getDislikes());
             st.setInt(5, cmt.getCommentId());
@@ -98,16 +98,16 @@ public class CommentDAO extends DAO{
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-    public ArrayList<Comment> getAllCommentByArticleID(int article_id) {
+    public ArrayList<Comment> getListComment (String criteria) {
         try {
-            String sql = "select * from comments where article_id = " + article_id;
+            String sql = "select * from comments where " + criteria;
             PreparedStatement st = con.prepareStatement(sql);
             ArrayList<Comment> list = new ArrayList<>();
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
                 list.add(new Comment(rs.getInt("comment_id"), rs.getInt("likes"), 
                         rs.getInt("dislikes"), rs.getString("comment_content"), 
-                        rs.getDate("comment_time"), rs.getInt("article_id"), 
+                        rs.getTimestamp("comment_time"), rs.getInt("article_id"), 
                         rs.getInt("user_id")));
             }
             return list;

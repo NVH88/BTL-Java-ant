@@ -4,7 +4,7 @@
  */
 package Model.Article;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 
 /**
  *
@@ -13,12 +13,12 @@ import java.sql.Date;
 public class Article {
     private int articleId, userId, likes, dislikes, reports;
     private String articleName, articleCategory, articleDescription, content, image;
-    private Date timeSubmit, timeAccept;
+    private Timestamp timeSubmit, timeAccept;
     private boolean stt;
 
     public Article(int articleId, int likes, int dislikes, int reports, 
             String articleName, String articleCategory, String articleDescription, 
-            String content, String image, Date timeSubmit, Date timeAccept, 
+            String content, String image, Timestamp timeSubmit, Timestamp timeAccept, 
             boolean stt, int userId) {
         this.articleId = articleId;
         this.likes = likes;
@@ -75,11 +75,11 @@ public class Article {
         return image;
     }
 
-    public Date getTimeSubmit() {
+    public Timestamp getTimeSubmit() {
         return timeSubmit;
     }
 
-    public Date getTimeAccept() {
+    public Timestamp getTimeAccept() {
         return timeAccept;
     }
 
@@ -97,6 +97,10 @@ public class Article {
 
     public void setDislikes(int dislikes) {
         this.dislikes = dislikes;
+    }
+
+    public void setTimeAccept(Timestamp timeAccept) {
+        this.timeAccept = timeAccept;
     }
 
     @Override

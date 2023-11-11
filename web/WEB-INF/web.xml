@@ -11,6 +11,16 @@
         <url-pattern>/article</url-pattern>
     </filter-mapping>
     
+    <filter>
+        <filter-name>CommentFilter</filter-name>
+        <filter-class>filter.article.CommentFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>CommentFilter</filter-name>
+        <url-pattern>/comment</url-pattern>
+    </filter-mapping>
+    
     
     <session-config>
         <session-timeout>
