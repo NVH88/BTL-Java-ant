@@ -17,6 +17,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -35,7 +36,9 @@ public class ArticleServlet extends HttpServlet {
         String method = req.getMethod();
         if (method.equals("PATCH")) {
             this.doPatch(req, resp);
-        } else {
+        } 
+        
+        else {
             super.service(req, resp);
         }
     }
@@ -94,22 +97,49 @@ public class ArticleServlet extends HttpServlet {
         String uncensored = request.getParameter("uncensored"); // bài chưa duyệt
         String sortBy = request.getParameter("sortBy"); // sắp xếp theo tiêu chí nào?
         String userId = request.getParameter("userId"); // lấy những bài viết của user theo thứ tự mới đến cũ
+        String featured = request.getParameter("featured"); // lấy nhưng bài viết nổi bật(>= 100 reactions, mới viết trong vòng 7 ngày)
         
         ArticleDAO ad = new ArticleDAO();
         Gson gson = new Gson();
         String json = "";
+        
         if (id != null) { // lấy bởi id
             Article art = (Article) ad.getById(Integer.parseInt(id));
             json = gson.toJson(art);
-        } else if (category != null) { // lấy bởi danh mục
+        } 
+        
+        else if (featured != null) { // lấy nhưng bài viết nổi bật(>= 100 reactions, mới viết trong vòng 7 ngày)
+            LocalDate today = LocalDate.now();
+            LocalDate sevenDaysBefore = today.minusDays(7);
+            String d = sevenDaysBefore.toString();
+            String criteria = "DATE(time_accept) > '" + d + "' and (likes + dislikes) >= 100";
+            ArrayList<Article> arr = ad.getListArticle(criteria);
+            Collections.sort(arr, new Comparator<Article>() {  // ưu tiên: số react > like > thời gian
+                @Override
+                public int compare(Article o1, Article o2) {
+                    if ((o2.getLikes() + o2.getDislikes()) != (o1.getLikes() + o1.getDislikes())) 
+                        return (o2.getLikes() + o2.getDislikes()) - (o1.getLikes() + o1.getDislikes());                   
+                    else if (o1.getLikes() != o2.getLikes())
+                        return o2.getLikes() - o1.getLikes();
+                    return o2.getTimeAccept().compareTo(o1.getTimeAccept());
+                }   
+            });
+            json = gson.toJson(arr);
+        } 
+        
+        else if (category != null) { // lấy bởi danh mục
             String criteria = "article_category = '" + category + "' and stt = 1";
             ArrayList<Article> arr = ad.getListArticle(criteria);
             json = gson.toJson(arr);
-        } else if (uncensored != null) { // lấy những article đang chờ duyệt
+        } 
+        
+        else if (uncensored != null) { // lấy những article đang chờ duyệt
             String criteria = "stt = 0";
             ArrayList<Article> arr = ad.getListArticle(criteria);
             json = gson.toJson(arr);
-        } else if (sortBy != null) { // lấy những article theo thứ tự sắp xếp
+        } 
+        
+        else if (sortBy != null) { // lấy những article theo thứ tự sắp xếp
             String criteria = "stt = 1";
             ArrayList<Article> arr = ad.getListArticle(criteria);
             
@@ -120,14 +150,18 @@ public class ArticleServlet extends HttpServlet {
                         return o2.getLikes() - o1.getLikes();
                     }   
                 });
-            } else if (sortBy.equals("scores")) { // sort theo điểm (likes - dislikes)
+            } 
+            
+            else if (sortBy.equals("scores")) { // sort theo điểm (likes - dislikes)
                 Collections.sort(arr, new Comparator<Article>() {
                     @Override
                     public int compare(Article o1, Article o2) {
                         return (o2.getLikes() - o2.getDislikes()) - (o1.getLikes() - o1.getDislikes());
                     }   
                 });
-            } else if (sortBy.equals("newest")) { // sort theo bài mới nhất
+            } 
+            
+            else if (sortBy.equals("newest")) { // sort theo bài mới nhất
                 Collections.sort(arr, new Comparator<Article>() {
                     @Override
                     public int compare(Article o1, Article o2) {
@@ -137,7 +171,9 @@ public class ArticleServlet extends HttpServlet {
             }
             
             json = gson.toJson(arr);
-        } else if(userId != null) { // lấy những bài viết đã được duyệt của userId theo thứ tự mới nhất
+        } 
+        
+        else if(userId != null) { // lấy những bài viết đã được duyệt của userId theo thứ tự mới nhất
             String criteria = "user_id = " + userId + " and stt = 1";
             ArrayList<Article> arr = ad.getListArticle(criteria);
             Collections.sort(arr, new Comparator<Article>() {
@@ -147,11 +183,14 @@ public class ArticleServlet extends HttpServlet {
                 }   
             });
             json = gson.toJson(arr);
-        } else { // lấy toàn bộ bài viết đã được duyệt
+        } 
+        
+        else { // lấy toàn bộ bài viết đã được duyệt
             String criteria = "stt = 1";
             ArrayList<Article> arr = ad.getListArticle(criteria);
             json = gson.toJson(arr);
         }
+        
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write(json);

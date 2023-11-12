@@ -51,7 +51,9 @@ public class CommentServlet extends HttpServlet {
         if (id != null) { // Lấy comment theo id
             Comment cmt = (Comment) cd.getById(Integer.parseInt(id));
             json = gson.toJson(cmt);
-        } else if (articleId != null) { // lấy theo bài viết
+        } 
+        
+        else if (articleId != null) { // lấy theo bài viết
             String criteria = "article_id = " + articleId;
             ArrayList<Comment> list = cd.getListComment(criteria); // mặc định
             if (sortBy != null) { // sắp xếp
@@ -62,14 +64,18 @@ public class CommentServlet extends HttpServlet {
                             return o2.getLikes() - o1.getLikes();
                         }   
                     });
-                } else if (sortBy.equals("scores")) { // theo số điểm
+                } 
+                
+                else if (sortBy.equals("scores")) { // theo số điểm
                     Collections.sort(list, new Comparator<Comment>() {
                         @Override
                         public int compare(Comment o1, Comment o2) {
                             return (o2.getLikes() - o2.getDislikes()) - (o1.getLikes() - o1.getDislikes());
                         }   
                     });
-                } else if (sortBy.equals("newest")) { // theo thời gian mới nhất
+                } 
+                
+                else if (sortBy.equals("newest")) { // theo thời gian mới nhất
                     Collections.sort(list, new Comparator<Comment>() {
                         @Override
                         public int compare(Comment o1, Comment o2) {

@@ -42,18 +42,26 @@ public class ReactionCommentServlet extends HttpServlet {
         if (reactionCommentId != null) { // lấy rc theo id
             ReactionComment rc = (ReactionComment) rcd.getById(Integer.parseInt(reactionCommentId));
             json = gson.toJson(rc);
-        } else if (commentId != null && userId != null) { // lấy rc theo cmt và user
+        } 
+        
+        else if (commentId != null && userId != null) { // lấy rc theo cmt và user
             ReactionComment rc = rcd.getByCommentAndUser(Integer.parseInt(commentId), Integer.parseInt(userId));
             json = gson.toJson(rc);
-        } else if (commentId != null) { // lấy list rc theo cmt
+        } 
+        
+        else if (commentId != null) { // lấy list rc theo cmt
             String criteria = "comment_id = " + commentId;
             ArrayList<ReactionComment> list = rcd.getListRC(criteria);
             json = gson.toJson(list);
-        } else if (userId != null) { // lấy list rc theo user
+        } 
+        
+        else if (userId != null) { // lấy list rc theo user
             String criteria = "user_id = " + userId;
             ArrayList<ReactionComment> list = rcd.getListRC(criteria);
             json = gson.toJson(list);
-        } else if (articleId != null) { // lấy list rc theo article
+        } 
+        
+        else if (articleId != null) { // lấy list rc theo article
             String criteria = "article_id = " + articleId;
             ArrayList<Comment> listCmt = cd.getListComment(criteria);
             ArrayList<ReactionComment> listRC = new ArrayList<>();

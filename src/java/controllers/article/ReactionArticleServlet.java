@@ -40,14 +40,20 @@ public class ReactionArticleServlet extends HttpServlet {
         if (reactionArticleId != null) { // Lấy ra reactionAritcle theo id
             ReactionArticle ra = (ReactionArticle) rad.getById(Integer.parseInt(reactionArticleId));
             json = gson.toJson(ra);
-        } else if (articleId != null && userId != null) { // Lấy ra reactionAritcle theo user và article
+        } 
+        
+        else if (articleId != null && userId != null) { // Lấy ra reactionAritcle theo user và article
             ReactionArticle ra = rad.getByArticleAndUser(Integer.parseInt(articleId), Integer.parseInt(userId));
             json = gson.toJson(ra);
-        } else if (articleId != null) { // Lấy ra list reactionAritcle article
+        } 
+        
+        else if (articleId != null) { // Lấy ra list reactionAritcle article
             String criteria = "article_id = " + articleId;
             ArrayList<ReactionArticle> list = rad.getListRA(criteria);
             json = gson.toJson(list);
-        } else if (userId != null) { // Lấy ra list reactionAritcle user
+        } 
+        
+        else if (userId != null) { // Lấy ra list reactionAritcle user
             String criteria = "user_id = " + userId;
             ArrayList<ReactionArticle> list = rad.getListRA(criteria);
             json = gson.toJson(list);
@@ -104,6 +110,7 @@ public class ReactionArticleServlet extends HttpServlet {
             } catch (JSONException ex) {
             }
         }
+        
         if (!ok) {
             try { // xóa 1 reactionArticle theo userId và articleId
                 JSONObject jsonObject = new JSONObject(json.toString());
@@ -115,6 +122,7 @@ public class ReactionArticleServlet extends HttpServlet {
             } catch (JSONException ex) {
             }
         }
+        
         if (!ok) {
             try { // xóa list reactionArticle theo articleId
                 JSONObject jsonObject = new JSONObject(json.toString());
@@ -125,6 +133,7 @@ public class ReactionArticleServlet extends HttpServlet {
             } catch (JSONException ex) {
             }
         }
+        
         if (!ok) {
             try { // xóa list reactionArticle theo userId
                 JSONObject jsonObject = new JSONObject(json.toString());
