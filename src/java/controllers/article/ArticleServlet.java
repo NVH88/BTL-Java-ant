@@ -45,6 +45,8 @@ public class ArticleServlet extends HttpServlet {
     
     // cập nhật số like, dislike của bài viết hoặc duyệt bài
     protected void doPatch(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setHeader("Access-Control-Allow-Origin", "*");
+        resp.setHeader("Access-Control-Allow-Methods", "PATCH");
         StringBuilder json = (StringBuilder) req.getAttribute("json");
         
         ArticleDAO ad = new ArticleDAO();
@@ -92,6 +94,8 @@ public class ArticleServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Methods", "GET");
         String id = request.getParameter("id"); //article_id
         String category = request.getParameter("category");
         String uncensored = request.getParameter("uncensored"); // bài chưa duyệt
@@ -201,6 +205,8 @@ public class ArticleServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         try {
+            response.setHeader("Access-Control-Allow-Origin", "*");
+            response.setHeader("Access-Control-Allow-Methods", "POST");
             StringBuilder json = (StringBuilder) request.getAttribute("json");
             
             JSONObject jsonObject = new JSONObject(json.toString());
@@ -243,6 +249,8 @@ public class ArticleServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Methods", "DELETE");
         response.setContentType("application/json"); 
         response.setCharacterEncoding("UTF-8");
         boolean ok = false;
