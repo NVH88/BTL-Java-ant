@@ -101,7 +101,9 @@ public class ArticleServlet extends HttpServlet {
         String uncensored = request.getParameter("uncensored"); // bài chưa duyệt
         String sortBy = request.getParameter("sortBy"); // sắp xếp theo tiêu chí nào?
         String userId = request.getParameter("userId"); // lấy những bài viết của user theo thứ tự mới đến cũ
-        String featured = request.getParameter("featured"); // lấy nhưng bài viết nổi bật(>= 100 reactions, mới viết trong vòng 7 ngày)
+        String featured = request.getParameter("featured"); // lấy những bài viết nổi bật(>= 100 reactions, mới viết trong vòng 7 ngày)
+        String accepted = request.getParameter("accepted"); // lấy những bài viết đã duyệt
+        // không có parameter là lấy hết
         
         ArticleDAO ad = new ArticleDAO();
         Gson gson = new Gson();
@@ -134,6 +136,12 @@ public class ArticleServlet extends HttpServlet {
         else if (category != null) { // lấy bởi danh mục
             String criteria = "article_category = '" + category + "' and stt = 1";
             ArrayList<Article> arr = ad.getListArticle(criteria);
+            Collections.sort(arr, new Comparator<Article>() { // sắp xếp theo thứ tự thời gian gần nhất
+                @Override
+                public int compare(Article o1, Article o2) {
+                    return o2.getTimeAccept().compareTo(o1.getTimeAccept());
+                }   
+            });
             json = gson.toJson(arr);
         } 
         
@@ -189,8 +197,14 @@ public class ArticleServlet extends HttpServlet {
             json = gson.toJson(arr);
         } 
         
-        else { // lấy toàn bộ bài viết đã được duyệt
+        else if (accepted != null){ // lấy toàn bộ bài viết đã được duyệt
             String criteria = "stt = 1";
+            ArrayList<Article> arr = ad.getListArticle(criteria);
+            json = gson.toJson(arr);
+        }
+        
+        else {
+            String criteria = "1";
             ArrayList<Article> arr = ad.getListArticle(criteria);
             json = gson.toJson(arr);
         }

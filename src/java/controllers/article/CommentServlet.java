@@ -83,7 +83,15 @@ public class CommentServlet extends HttpServlet {
                         }   
                     });
                 }
+                
             }
+            
+            json = gson.toJson(list);
+        }
+            
+        else { // lấy toàn bộ comment
+            String ci = "1";
+            ArrayList<Comment> list = cd.getListComment(ci); // mặc định
             json = gson.toJson(list);
         }
         
